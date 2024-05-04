@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { Inter } from "next/font/google";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter";
-import "./globals.css";
+import "@/styles/globals.css";
+import styles from "@/styles/page.module.css";
+import { CounterStoreProvider } from "@/providers/counter-store-provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,9 +21,33 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <AppRouterCacheProvider>
-          {children}
-        </AppRouterCacheProvider>
+
+        <CounterStoreProvider>
+          <AppRouterCacheProvider>
+            <main className={styles.main}>
+              <div className={styles.description}>
+                <div>
+                  <a
+                    href="https://sites.temple.edu/templeformularacing/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Image
+                      src="/cropped-TFR-black-300x139.png"
+                      alt="TFR Logo"
+                      className={styles.vercelLogo}
+                      width={100}
+                      height={46}
+                      priority
+                    />
+                  </a>
+                </div>
+              </div>
+              {children}
+            </main>
+
+          </AppRouterCacheProvider>
+        </CounterStoreProvider>
       </body>
     </html>
   );
