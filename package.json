@@ -6,7 +6,12 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "cf:deploy": "wrangler deploy",
+    "cf:dev": "wrangler dev",
+    "cf:start": "wrangler dev",
+    "cf:test": "vitest",
+    "cf:typegen": "wrangler types"
   },
   "dependencies": {
     "@emotion/cache": "^11.11.0",
@@ -21,11 +26,14 @@
     "react-dom": "^18"
   },
   "devDependencies": {
+    "@cloudflare/vitest-pool-workers": "^0.2.5",
+    "@cloudflare/workers-types": "^4.20240423.0",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "eslint": "^8",
     "eslint-config-next": "14.2.3",
-    "typescript": "^5"
+    "typescript": "^5",
+    "wrangler": "^3.53.0"
   }
 }
