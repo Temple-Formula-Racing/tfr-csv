@@ -2,13 +2,15 @@
 
 import { useCSVStore } from "@/providers/csv-store-provider";
 import styles from "@/styles/charts.module.css";
-import { TextField, Typography } from "@mui/material";
+import { Button, TextField, Typography } from "@mui/material";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 import { LineChart } from "@mui/x-charts";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import MultipleSelect from "../MultipleSelect";
 import { useDebounce } from "@uidotdev/usehooks";
+import Link from "next/link";
 
 export default function ChartsPage() {
   const { fromTime, toTime, setFromTime, setToTime, csvMap, csvHeaders } = useCSVStore(state => state);
@@ -75,6 +77,14 @@ export default function ChartsPage() {
           console.log("New selections!", selected);
         }}
       />
+
+      <Button
+        component={Link}
+        href="/"
+        startIcon={<ArrowBackIcon />}
+      >
+        Go home
+      </Button>
     </div>
   );
 }
