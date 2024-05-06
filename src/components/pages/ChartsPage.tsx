@@ -5,20 +5,19 @@ import styles from "@/styles/charts.module.css";
 import { Button, TextField, Typography } from "@mui/material";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
-import { LineChart } from "@mui/x-charts";
+// import { LineChart } from "@mui/x-charts";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import MultipleSelect from "../MultipleSelect";
+import { useEffect } from "react";
+// import MultipleSelect from "../MultipleSelect";
 import { useDebounce } from "@uidotdev/usehooks";
 import Link from "next/link";
+import Chart from "../Chart";
 
 export default function ChartsPage() {
   const { fromTime, toTime, setFromTime, setToTime, csvMap, csvHeaders } = useCSVStore(state => state);
 
   const debouncedFromTime = useDebounce(fromTime, 500);
   const debouncedToTime = useDebounce(toTime, 500);
-
-  const [selections, setSelections] = useState<string[]>(csvHeaders.slice(1));
 
   const router = useRouter();
 
@@ -55,27 +54,9 @@ export default function ChartsPage() {
         />
       </div>
 
-      <LineChart
-        series={selections.map((selection) => {
-          const selectionIndexInHeaders = csvHeaders.indexOf(selection);
-          console.log("selection", selection, "selectionIndexInHeaders", selectionIndexInHeaders);
-          return {
-            data: Array.from(data.values()).map((row) => +row[selectionIndexInHeaders]),
-            label: selection
-          };
-        })}
-        height={400}
-        xAxis={[{ data: Array.from(data.keys()) }]}
-      />
-
-      <MultipleSelect
-        label={"Sources"}
-        items={csvHeaders}
-        selected={[csvHeaders[0]]} // Select by default only the first item
-        selectionChange={(selected) => {
-          setSelections(selected);
-          console.log("New selections!", selected);
-        }}
+      <Chart
+        data={data}
+        headers={csvHeaders}  
       />
 
       <Button
