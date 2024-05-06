@@ -40,7 +40,7 @@ type VisuallyHiddenCSVProps = React.InputHTMLAttributes<HTMLInputElement> & {
 
 export default function VisuallyHiddenCSVUpload(props: VisuallyHiddenCSVProps) {
 
-  const { setCSVData, setFromTime, setToTime } = useCSVStore(state => state);
+  const { setCSVMap, setCSVHeaders, setFromTime, setToTime } = useCSVStore(state => state);
 
   async function handleOnChange(e: React.ChangeEvent<HTMLInputElement>) {
     console.time('parseCSV');
@@ -59,15 +59,22 @@ export default function VisuallyHiddenCSVUpload(props: VisuallyHiddenCSVProps) {
       if (typeof text !== 'string') return;
 
       const data = await parseCSV(text);
-      setCSVData(data);
+      // setCSVData(data);
+      setCSVHeaders(data.headers);
+      
+      const mapData = new Map<number, string[]>();
+      data.dataRows.forEach((row) => {
+        mapData.set(+row[0], row.slice(1));
+      });
+      setCSVMap(mapData);
 
-      console.log(data);
+
+      console.log("mapdata", mapData);
 
       const timeData = data.dataRows.map(row => row[0]);
-      console.log('timedata', timeData);
 
       setFromTime(+timeData[0]);
-      setToTime(+timeData[timeData.length - 1]);
+      setToTime(+timeData[200]); // Only show the first 200 data points
 
       props.finishedLoadingCB?.();
 
