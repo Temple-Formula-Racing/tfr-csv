@@ -15,6 +15,6 @@
 .flexColumn {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  align-items: flex-start;
+  gap: 2rem;
+  /* align-items: flex-start; */
 }

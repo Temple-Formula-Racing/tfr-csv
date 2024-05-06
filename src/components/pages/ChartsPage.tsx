@@ -2,16 +2,16 @@
 
 import { useCSVStore } from "@/providers/csv-store-provider";
 import styles from "@/styles/charts.module.css";
-import { Button, TextField, Typography } from "@mui/material";
+import { Button, Divider, TextField, Typography } from "@mui/material";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 // import { LineChart } from "@mui/x-charts";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { Fragment, useEffect, useState } from "react";
 // import MultipleSelect from "../MultipleSelect";
 import { useDebounce } from "@uidotdev/usehooks";
 import Link from "next/link";
-import Chart from "../Chart";
+import Chart, { ChartProps } from "../Chart";
 
 export default function ChartsPage() {
   const { fromTime, toTime, setFromTime, setToTime, csvMap, csvHeaders } = useCSVStore(state => state);
@@ -20,6 +20,13 @@ export default function ChartsPage() {
   const debouncedToTime = useDebounce(toTime, 500);
 
   const router = useRouter();
+
+  const [chartsArray, setChartsArray] = useState<ChartProps[]>([
+    {
+      data: csvMap,
+      headers: csvHeaders
+    }
+  ]);
 
   useEffect(() => {
     // If the CSV data is empty, redirect to the homepage
@@ -54,12 +61,39 @@ export default function ChartsPage() {
         />
       </div>
 
-      <Chart
-        data={data}
-        headers={csvHeaders}  
-      />
+      <Divider />
+
+      {chartsArray.map((chartProps, i) => (
+        <Fragment key={i}>
+          <Chart
+            data={data}
+            headers={chartProps.headers}
+            onChartRemove={() => {
+              setChartsArray(chartsArray.filter((_, index) => index !== i));
+            }}
+          />
+
+          <Divider />
+        </Fragment>
+      ))}
 
       <Button
+        variant={chartsArray.length === 0 ? "contained" : "outlined"}
+        sx={{ alignSelf: "flex-start" }}
+        onClick={() => {
+          setChartsArray([
+            ...chartsArray,
+            {
+              data: csvMap,
+              headers: csvHeaders
+            }
+          ]);
+        }}>
+        New Chart
+      </Button>
+
+      <Button
+        sx={{ alignSelf: "flex-start" }}
         component={Link}
         href="/"
         startIcon={<ArrowBackIcon />}
