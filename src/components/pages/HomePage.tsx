@@ -1,13 +1,14 @@
 "use client";
 
-import styles from "@/styles/page.module.css";
-import { Button, Card, Typography } from "@mui/material";
-import VisuallyHiddenInput from "@/components/VisuallyHiddenInput";
-import { useCounterStore } from "@/providers/counter-store-provider";
-import Link from "next/link";
+import styles from "@/styles/homepage.module.css";
+import { Button, Typography } from "@mui/material";
+import VisuallyHiddenCSVUpload from "@/components/VisuallyHiddenInput";
+// import { useCSVStore } from "@/providers/csv-store-provider";
+import { useRouter } from "next/navigation";
 
 export default function HomePage() {
-  const { count, incrementCount } = useCounterStore(state => state);
+
+  const router = useRouter();
 
   return (
     <>
@@ -22,23 +23,14 @@ export default function HomePage() {
           tabIndex={-1}
         >
           Upload
-          <VisuallyHiddenInput
+          <VisuallyHiddenCSVUpload
             type="file"
             accept=".csv"
+            finishedLoadingCB={() => {
+              console.log("Finished loading");
+              router.push("/charts");
+            }}
           />
-        </Button>
-        <Button
-          variant="contained"
-          onClick={() => incrementCount()}
-        >
-          {count}
-        </Button>
-        <Button
-          component={Link}
-          href="/charts"
-          variant="contained"
-        >
-          Charts
         </Button>
       </div>
     </>
