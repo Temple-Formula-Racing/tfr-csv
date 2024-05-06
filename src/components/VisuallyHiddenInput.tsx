@@ -60,7 +60,7 @@ export default function VisuallyHiddenCSVUpload(props: VisuallyHiddenCSVProps) {
 
       const data = await parseCSV(text);
       // setCSVData(data);
-      setCSVHeaders(data.headers);
+      setCSVHeaders(data.headers.slice(1));
       
       const mapData = new Map<number, string[]>();
       data.dataRows.forEach((row) => {
@@ -68,13 +68,12 @@ export default function VisuallyHiddenCSVUpload(props: VisuallyHiddenCSVProps) {
       });
       setCSVMap(mapData);
 
-
       console.log("mapdata", mapData);
 
       const timeData = data.dataRows.map(row => row[0]);
 
       setFromTime(+timeData[0]);
-      setToTime(+timeData[200]); // Only show the first 200 data points
+      setToTime(+timeData[150]); // Only show the first few data points
 
       props.finishedLoadingCB?.();
 

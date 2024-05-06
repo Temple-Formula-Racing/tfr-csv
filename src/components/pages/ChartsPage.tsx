@@ -6,11 +6,17 @@ import { TextField, Typography } from "@mui/material";
 
 import { LineChart } from "@mui/x-charts";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import MultipleSelect from "../MultipleSelect";
+import { useDebounce } from "@uidotdev/usehooks";
 
 export default function ChartsPage() {
   const { fromTime, toTime, setFromTime, setToTime, csvMap, csvHeaders } = useCSVStore(state => state);
+
+  const debouncedFromTime = useDebounce(fromTime, 500);
+  const debouncedToTime = useDebounce(toTime, 500);
+
+  const [selections, setSelections] = useState<string[]>(csvHeaders.slice(1));
 
   const router = useRouter();
 
@@ -24,7 +30,7 @@ export default function ChartsPage() {
   // Only grab map entries that are within the time range
   const data = new Map(
     Array.from(csvMap.entries())
-      .filter(([time]) => time >= fromTime && time <= toTime)
+      .filter(([time]) => time >= debouncedFromTime && time <= debouncedToTime)
   );
 
   return (
@@ -48,11 +54,14 @@ export default function ChartsPage() {
       </div>
 
       <LineChart
-        series={[
-          {
-            data: Array.from(data.values()).map(val => +val[0])
-          }
-        ]}
+        series={selections.map((selection) => {
+          const selectionIndexInHeaders = csvHeaders.indexOf(selection);
+          console.log("selection", selection, "selectionIndexInHeaders", selectionIndexInHeaders);
+          return {
+            data: Array.from(data.values()).map((row) => +row[selectionIndexInHeaders]),
+            label: selection
+          };
+        })}
         height={400}
         xAxis={[{ data: Array.from(data.keys()) }]}
       />
@@ -60,6 +69,11 @@ export default function ChartsPage() {
       <MultipleSelect
         label={"Sources"}
         items={csvHeaders}
+        selected={[csvHeaders[0]]} // Select by default only the first item
+        selectionChange={(selected) => {
+          setSelections(selected);
+          console.log("New selections!", selected);
+        }}
       />
     </div>
   );
